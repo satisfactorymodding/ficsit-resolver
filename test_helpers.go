@@ -1,0 +1,271 @@
+package resolver
+
+import (
+	"context"
+	"errors"
+)
+
+var _ Provider = (*MockProvider)(nil)
+
+type MockProvider struct{}
+
+func (m MockProvider) SMLVersions(_ context.Context) ([]SMLVersion, error) {
+	return []SMLVersion{
+		{
+			ID:                  "v2.2.1",
+			Version:             "2.2.1",
+			SatisfactoryVersion: 125236,
+			Targets:             []SMLVersionTarget{},
+		},
+		{
+			ID:                  "v3.3.2",
+			Version:             "3.3.2",
+			SatisfactoryVersion: 194714,
+			Targets: []SMLVersionTarget{
+				{
+					TargetName: TargetNameWindows,
+					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.3.2/SML.zip",
+				},
+			},
+		},
+		{
+			ID:                  "v3.6.0",
+			Version:             "3.6.0",
+			SatisfactoryVersion: 264901,
+			Targets: []SMLVersionTarget{
+				{
+					TargetName: TargetNameWindows,
+					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.6.0/SML.zip",
+				},
+				{
+					TargetName: TargetNameWindowsServer,
+					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.6.0/SML.zip",
+				},
+				{
+					TargetName: TargetNameLinuxServer,
+					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.6.0/SML.zip",
+				},
+			},
+		},
+		{
+			ID:                  "v3.6.1",
+			Version:             "3.6.1",
+			SatisfactoryVersion: 264901,
+			Targets: []SMLVersionTarget{
+				{
+					TargetName: TargetNameWindows,
+					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.6.1/SML.zip",
+				},
+				{
+					TargetName: TargetNameWindowsServer,
+					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.6.1/SML.zip",
+				},
+				{
+					TargetName: TargetNameLinuxServer,
+					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.6.1/SML.zip",
+				},
+			},
+		},
+	}, nil
+}
+
+var commonTargets = []Target{
+	{
+		TargetName: "Windows",
+		Hash:       "62f5c84eca8480b3ffe7d6c90f759e3b463f482530e27d854fd48624fdd3acc9",
+	},
+	{
+		TargetName: "WindowsServer",
+		Hash:       "8a83fcd4abece4192038769cc672fff6764d72c32fb6c7a8c58d66156bb07917",
+	},
+	{
+		TargetName: "LinuxServer",
+		Hash:       "8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85",
+	},
+}
+
+func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID string) ([]ModVersion, error) {
+	sml3 := Dependency{
+		ModID:     "SML",
+		Condition: "^3.6.0",
+		Optional:  false,
+	}
+
+	switch modID {
+	case "RefinedPower":
+		return []ModVersion{
+			{
+				ID:      "7QcfNdo5QAAyoC",
+				Version: "3.2.13",
+				Dependencies: []Dependency{
+					{
+						ModID:     "ModularUI",
+						Condition: "^2.1.11",
+						Optional:  false,
+					},
+					{
+						ModID:     "RefinedRDLib",
+						Condition: "^1.1.7",
+						Optional:  false,
+					},
+					{
+						ModID:     "SML",
+						Condition: "^3.6.1",
+						Optional:  false,
+					},
+				},
+				Targets: commonTargets,
+			},
+			{
+				ID:      "7QcfNdo5QAAyoC",
+				Version: "3.2.11",
+				Dependencies: []Dependency{
+					{
+						ModID:     "ModularUI",
+						Condition: "^2.1.10",
+						Optional:  false,
+					},
+					{
+						ModID:     "RefinedRDLib",
+						Condition: "^1.1.6",
+						Optional:  false,
+					},
+					sml3,
+				},
+				Targets: commonTargets,
+			},
+			{
+				ID:      "7QcfNdo5QAAyoC",
+				Version: "3.2.10",
+				Dependencies: []Dependency{
+					{
+						ModID:     "ModularUI",
+						Condition: "^2.1.9",
+						Optional:  false,
+					},
+					{
+						ModID:     "RefinedRDLib",
+						Condition: "^1.1.5",
+						Optional:  false,
+					},
+					sml3,
+				},
+				Targets: commonTargets,
+			},
+		}, nil
+	case "RefinedRDLib":
+		return []ModVersion{
+			{
+				ID:      "7QcfNdo5QAAyoC",
+				Version: "1.1.7",
+				Dependencies: []Dependency{
+					{
+						ModID:     "SML",
+						Condition: "^3.6.1",
+						Optional:  false,
+					},
+				},
+				Targets: commonTargets,
+			},
+			{
+				ID:           "7QcfNdo5QAAyoC",
+				Version:      "1.1.6",
+				Dependencies: []Dependency{sml3},
+				Targets:      commonTargets,
+			},
+			{
+				ID:           "7QcfNdo5QAAyoC",
+				Version:      "1.1.5",
+				Dependencies: []Dependency{sml3},
+				Targets:      commonTargets,
+			},
+		}, nil
+	case "ModularUI":
+		return []ModVersion{
+			{
+				ID:      "7QcfNdo5QAAyoC",
+				Version: "2.1.12",
+				Dependencies: []Dependency{
+					{
+						ModID:     "SML",
+						Condition: "^3.6.1",
+						Optional:  false,
+					},
+				},
+				Targets: commonTargets,
+			},
+			{
+				ID:           "7QcfNdo5QAAyoC",
+				Version:      "2.1.11",
+				Dependencies: []Dependency{sml3},
+				Targets:      commonTargets,
+			},
+			{
+				ID:           "7QcfNdo5QAAyoC",
+				Version:      "2.1.10",
+				Dependencies: []Dependency{sml3},
+				Targets:      commonTargets,
+			},
+		}, nil
+	case "ThisModDoesNotExist$$$":
+		return []ModVersion{}, errors.New("mod not found")
+	case "ComplexMod":
+		return []ModVersion{
+			{
+				ID:           "7QcfNdo5QAAyoC",
+				Version:      "3.0.0",
+				Dependencies: []Dependency{sml3},
+				Targets: []Target{
+					{
+						TargetName: "LinuxServer",
+						Hash:       "8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85",
+					},
+				},
+			},
+			{
+				ID:           "7QcfNdo5QAAyoC",
+				Version:      "2.0.0",
+				Dependencies: []Dependency{sml3},
+				Targets:      commonTargets,
+			},
+			{
+				ID:           "7QcfNdo5QAAyoC",
+				Version:      "1.0.0",
+				Dependencies: []Dependency{sml3},
+				Targets: []Target{
+					{
+						TargetName: "Windows",
+						Hash:       "62f5c84eca8480b3ffe7d6c90f759e3b463f482530e27d854fd48624fdd3acc9",
+					},
+				},
+			},
+		}, nil
+	}
+
+	panic("ModVersionsWithDependencies: " + modID)
+}
+
+func (m MockProvider) GetModName(_ context.Context, modReference string) (*ModName, error) {
+	switch modReference {
+	case "RefinedPower":
+		return &ModName{
+			ID:           "DGiLzB3ZErWu2V",
+			ModReference: "RefinedPower",
+			Name:         "Refined Power",
+		}, nil
+	case "RefinedRDLib":
+		return &ModName{
+			ID:           "B24emzbs6xVZQr",
+			ModReference: "RefinedRDLib",
+			Name:         "RefinedRDLib",
+		}, nil
+	case "ComplexMod":
+		return &ModName{
+			ID:           "asd32rfewqhy4",
+			ModReference: "ComplexMod",
+			Name:         "ComplexMod",
+		}, nil
+	}
+
+	panic("GetModName: " + modReference)
+}
