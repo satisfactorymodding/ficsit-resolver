@@ -72,15 +72,15 @@ func (m MockProvider) SMLVersions(_ context.Context) ([]SMLVersion, error) {
 var commonTargets = []Target{
 	{
 		TargetName: "Windows",
-		Hash:       "62f5c84eca8480b3ffe7d6c90f759e3b463f482530e27d854fd48624fdd3acc9",
+		Hash:       "698df20278b3de3ec30405569a22050c6721cc682389312258c14948bd8f38ae",
 	},
 	{
 		TargetName: "WindowsServer",
-		Hash:       "8a83fcd4abece4192038769cc672fff6764d72c32fb6c7a8c58d66156bb07917",
+		Hash:       "7be01ed372e0cf3287a04f5cb32bb9dcf6f6e7a5b7603b7e43669ec4c6c1457f",
 	},
 	{
 		TargetName: "LinuxServer",
-		Hash:       "8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85",
+		Hash:       "bdbd4cb1b472a5316621939ae2fe270fd0e3c0f0a75666a9cbe74ff1313c3663",
 	},
 }
 
