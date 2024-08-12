@@ -17,13 +17,11 @@ const (
 
 type DependencyResolver struct {
 	provider Provider
-	apiBase  string
 }
 
-func NewDependencyResolver(provider Provider, apiBase string) DependencyResolver {
+func NewDependencyResolver(provider Provider) DependencyResolver {
 	return DependencyResolver{
 		provider: provider,
-		apiBase:  apiBase,
 	}
 }
 
@@ -77,7 +75,7 @@ func (d DependencyResolver) ResolveModDependencies(constraints map[string]string
 				targets := make(map[string]LockedModTarget)
 				for _, target := range ver.Targets {
 					targets[string(target.TargetName)] = LockedModTarget{
-						Link: d.apiBase + "/v1/version/" + ver.ID + "/" + string(target.TargetName) + "/download",
+						Link: target.Link,
 						Hash: target.Hash,
 					}
 				}

@@ -7,10 +7,8 @@ import (
 	"github.com/MarvinJWendt/testza"
 )
 
-const apiBase = "https://api.ficsit.dev"
-
 func TestProfileResolution(t *testing.T) {
-	resolver := NewDependencyResolver(MockProvider{}, apiBase)
+	resolver := NewDependencyResolver(MockProvider{})
 
 	resolved, err := resolver.ResolveModDependencies(map[string]string{
 		"RefinedPower": "3.2.10",
@@ -22,7 +20,7 @@ func TestProfileResolution(t *testing.T) {
 }
 
 func TestProfileRequiredOlderVersion(t *testing.T) {
-	resolver := NewDependencyResolver(MockProvider{}, apiBase)
+	resolver := NewDependencyResolver(MockProvider{})
 
 	_, err := resolver.ResolveModDependencies(map[string]string{
 		"RefinedPower": "3.2.11",
@@ -33,7 +31,7 @@ func TestProfileRequiredOlderVersion(t *testing.T) {
 }
 
 func TestResolutionNonExistentMod(t *testing.T) {
-	resolver := NewDependencyResolver(MockProvider{}, apiBase)
+	resolver := NewDependencyResolver(MockProvider{})
 
 	_, err := resolver.ResolveModDependencies(map[string]string{
 		"ThisModDoesNotExist$$$": ">0.0.0",
@@ -43,7 +41,7 @@ func TestResolutionNonExistentMod(t *testing.T) {
 }
 
 func TestInvalidConstraint(t *testing.T) {
-	resolver := NewDependencyResolver(MockProvider{}, apiBase)
+	resolver := NewDependencyResolver(MockProvider{})
 
 	_, err := resolver.ResolveModDependencies(map[string]string{
 		"ThisModDoesNotExist$$$": "Hello",
@@ -53,7 +51,7 @@ func TestInvalidConstraint(t *testing.T) {
 }
 
 func TestOldGameVersion(t *testing.T) {
-	resolver := NewDependencyResolver(MockProvider{}, apiBase)
+	resolver := NewDependencyResolver(MockProvider{})
 
 	_, err := resolver.ResolveModDependencies(map[string]string{
 		"RefinedPower": "*",
@@ -65,7 +63,7 @@ So, because Satisfactory CL0 is installed, version solving failed.`, err.Error()
 }
 
 func TestLockfileResolution(t *testing.T) {
-	resolver := NewDependencyResolver(MockProvider{}, apiBase)
+	resolver := NewDependencyResolver(MockProvider{})
 
 	lockfile := NewLockfile()
 	lockfile.Mods["RefinedPower"] = LockedMod{
@@ -83,7 +81,7 @@ func TestLockfileResolution(t *testing.T) {
 }
 
 func TestMissingTarget(t *testing.T) {
-	resolver := NewDependencyResolver(MockProvider{}, apiBase)
+	resolver := NewDependencyResolver(MockProvider{})
 
 	_, err := resolver.ResolveModDependencies(map[string]string{
 		"RefinedPower": "*",
@@ -93,7 +91,7 @@ func TestMissingTarget(t *testing.T) {
 }
 
 func TestResolveForAllTargets(t *testing.T) {
-	resolver := NewDependencyResolver(MockProvider{}, apiBase)
+	resolver := NewDependencyResolver(MockProvider{})
 
 	resolved, err := resolver.ResolveModDependencies(map[string]string{
 		"ComplexMod": "*",
@@ -106,7 +104,7 @@ func TestResolveForAllTargets(t *testing.T) {
 }
 
 func TestNoMatchForAllTargets(t *testing.T) {
-	resolver := NewDependencyResolver(MockProvider{}, apiBase)
+	resolver := NewDependencyResolver(MockProvider{})
 
 	_, err := resolver.ResolveModDependencies(map[string]string{
 		"ComplexMod": ">=3.0.0",

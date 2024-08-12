@@ -42,8 +42,8 @@ type Dependency struct {
 }
 
 type Target struct {
-	VersionID  string     `json:"version_id"`
 	TargetName TargetName `json:"target_name"`
+	Link       string     `json:"link"`
 	Hash       string     `json:"hash"`
 	Size       int64      `json:"size"`
 }
