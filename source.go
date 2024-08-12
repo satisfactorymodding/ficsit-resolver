@@ -70,6 +70,16 @@ func (f *ficsitAPISource) GetPackageVersions(pkg string) ([]pubgrub.PackageVersi
 			}
 		}
 
+		// If a version range string is empty, no version will satisfy it
+		if modVersion.GameVersion != "" {
+			factoryGameConstraint, err := semver.NewConstraint(modVersion.GameVersion)
+			if err != nil {
+				return nil, fmt.Errorf("failed to parse game version constraint %s: %w", modVersion.GameVersion, err)
+			}
+
+			dependencies[factoryGamePkg] = factoryGameConstraint
+		}
+
 		versions = append(versions, pubgrub.PackageVersion{
 			Version:              v,
 			Dependencies:         dependencies,

@@ -30,6 +30,7 @@ type VersionDependency struct {
 type ModVersion struct {
 	ID           string       `json:"id"`
 	Version      string       `json:"version"`
+	GameVersion  string       `json:"game_version"`
 	Dependencies []Dependency `json:"dependencies"`
 	Targets      []Target     `json:"targets"`
 }
