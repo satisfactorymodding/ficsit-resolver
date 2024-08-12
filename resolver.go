@@ -1,7 +1,6 @@
 package resolver
 
 import (
-	"context"
 	"errors"
 	"fmt"
 
@@ -13,7 +12,6 @@ import (
 
 const (
 	rootPkg        = "$$root$$"
-	smlPkg         = "SML"
 	factoryGamePkg = "FactoryGame"
 )
 
@@ -29,12 +27,7 @@ func NewDependencyResolver(provider Provider, apiBase string) DependencyResolver
 	}
 }
 
-func (d DependencyResolver) ResolveModDependencies(ctx context.Context, constraints map[string]string, lockFile *LockFile, gameVersion int, requiredTargets []TargetName) (*LockFile, error) {
-	smlVersionsDB, err := d.provider.SMLVersions(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed fetching SML versions: %w", err)
-	}
-
+func (d DependencyResolver) ResolveModDependencies(constraints map[string]string, lockFile *LockFile, gameVersion int, requiredTargets []TargetName) (*LockFile, error) {
 	gameVersionSemver, err := semver.NewVersion(fmt.Sprintf("%d", gameVersion))
 	if err != nil {
 		return nil, fmt.Errorf("failed parsing game version: %w", err)
@@ -56,7 +49,6 @@ func (d DependencyResolver) ResolveModDependencies(ctx context.Context, constrai
 
 	ficsitSource := &ficsitAPISource{
 		provider:        d.provider,
-		smlVersions:     smlVersionsDB,
 		gameVersion:     gameVersionSemver,
 		lockfile:        lockFile,
 		toInstall:       toInstall,
@@ -69,7 +61,7 @@ func (d DependencyResolver) ResolveModDependencies(ctx context.Context, constrai
 		finalError := err
 		var solverErr pubgrub.SolvingError
 		if errors.As(err, &solverErr) {
-			finalError = DependencyResolverError{SolvingError: solverErr, provider: d.provider, smlVersions: smlVersionsDB, gameVersion: gameVersion}
+			finalError = DependencyResolverError{SolvingError: solverErr, provider: d.provider, gameVersion: gameVersion}
 		}
 		return nil, fmt.Errorf("failed to solve dependencies: %w", finalError)
 	}
@@ -79,26 +71,6 @@ func (d DependencyResolver) ResolveModDependencies(ctx context.Context, constrai
 
 	outputLock := NewLockfile()
 	for k, v := range result {
-		if k == smlPkg {
-			for _, version := range ficsitSource.smlVersions {
-				if version.Version == v.String() {
-					targets := make(map[string]LockedModTarget)
-					for _, target := range version.Targets {
-						targets[string(target.TargetName)] = LockedModTarget{
-							Link: target.Link,
-						}
-					}
-
-					outputLock.Mods[k] = LockedMod{
-						Version: v.String(),
-						Targets: targets,
-					}
-					break
-				}
-			}
-			continue
-		}
-
 		value, _ := ficsitSource.modVersionInfo.Load(k)
 		for _, ver := range value {
 			if ver.Version == v.RawString() {

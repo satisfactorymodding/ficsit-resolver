@@ -1,7 +1,6 @@
 package resolver
 
 import (
-	"context"
 	"math"
 	"testing"
 
@@ -13,7 +12,7 @@ const apiBase = "https://api.ficsit.dev"
 func TestProfileResolution(t *testing.T) {
 	resolver := NewDependencyResolver(MockProvider{}, apiBase)
 
-	resolved, err := resolver.ResolveModDependencies(context.Background(), map[string]string{
+	resolved, err := resolver.ResolveModDependencies(map[string]string{
 		"RefinedPower": "3.2.10",
 	}, nil, math.MaxInt, nil)
 
@@ -25,7 +24,7 @@ func TestProfileResolution(t *testing.T) {
 func TestProfileRequiredOlderVersion(t *testing.T) {
 	resolver := NewDependencyResolver(MockProvider{}, apiBase)
 
-	_, err := resolver.ResolveModDependencies(context.Background(), map[string]string{
+	_, err := resolver.ResolveModDependencies(map[string]string{
 		"RefinedPower": "3.2.11",
 		"RefinedRDLib": "1.1.5",
 	}, nil, math.MaxInt, nil)
@@ -36,7 +35,7 @@ func TestProfileRequiredOlderVersion(t *testing.T) {
 func TestResolutionNonExistentMod(t *testing.T) {
 	resolver := NewDependencyResolver(MockProvider{}, apiBase)
 
-	_, err := resolver.ResolveModDependencies(context.Background(), map[string]string{
+	_, err := resolver.ResolveModDependencies(map[string]string{
 		"ThisModDoesNotExist$$$": ">0.0.0",
 	}, nil, math.MaxInt, nil)
 
@@ -46,7 +45,7 @@ func TestResolutionNonExistentMod(t *testing.T) {
 func TestInvalidConstraint(t *testing.T) {
 	resolver := NewDependencyResolver(MockProvider{}, apiBase)
 
-	_, err := resolver.ResolveModDependencies(context.Background(), map[string]string{
+	_, err := resolver.ResolveModDependencies(map[string]string{
 		"ThisModDoesNotExist$$$": "Hello",
 	}, nil, math.MaxInt, nil)
 
@@ -56,12 +55,12 @@ func TestInvalidConstraint(t *testing.T) {
 func TestOldGameVersion(t *testing.T) {
 	resolver := NewDependencyResolver(MockProvider{}, apiBase)
 
-	_, err := resolver.ResolveModDependencies(context.Background(), map[string]string{
+	_, err := resolver.ResolveModDependencies(map[string]string{
 		"RefinedPower": "*",
 	}, nil, 0, nil)
 
-	testza.AssertEqual(t, `failed to solve dependencies: Because Refined Power (RefinedPower) "<3.2.13" depends on SML "^3.6.0" and Refined Power (RefinedPower) "3.2.13" depends on SML "3.6.1", every version of Refined Power (RefinedPower) depends on SML "^3.6.0".
-And because SML ">=3.6.0" depends on Satisfactory (FactoryGame) ">=264901", every version of Refined Power (RefinedPower) depends on Satisfactory (FactoryGame) ">=264901".
+	testza.AssertEqual(t, `failed to solve dependencies: Because Refined Power (RefinedPower) "<3.2.13" depends on Satisfactory Mod Loader (SML) "^3.6.0" and Refined Power (RefinedPower) "3.2.13" depends on Satisfactory Mod Loader (SML) "3.6.1", every version of Refined Power (RefinedPower) depends on Satisfactory Mod Loader (SML) "^3.6.0".
+And because Satisfactory Mod Loader (SML) ">=3.6.0" depends on Satisfactory (FactoryGame) ">=264901", every version of Refined Power (RefinedPower) depends on Satisfactory (FactoryGame) ">=264901".
 So, because Satisfactory CL0 is installed, version solving failed.`, err.Error())
 }
 
@@ -73,7 +72,7 @@ func TestLockfileResolution(t *testing.T) {
 		Version: "3.2.11",
 	}
 
-	resolved, err := resolver.ResolveModDependencies(context.Background(), map[string]string{
+	resolved, err := resolver.ResolveModDependencies(map[string]string{
 		"RefinedPower": ">=3.2.10",
 	}, lockfile, math.MaxInt, nil)
 
@@ -86,7 +85,7 @@ func TestLockfileResolution(t *testing.T) {
 func TestMissingTarget(t *testing.T) {
 	resolver := NewDependencyResolver(MockProvider{}, apiBase)
 
-	_, err := resolver.ResolveModDependencies(context.Background(), map[string]string{
+	_, err := resolver.ResolveModDependencies(map[string]string{
 		"RefinedPower": "*",
 	}, nil, math.MaxInt, []TargetName{"NotARealTarget"})
 
@@ -96,7 +95,7 @@ func TestMissingTarget(t *testing.T) {
 func TestResolveForAllTargets(t *testing.T) {
 	resolver := NewDependencyResolver(MockProvider{}, apiBase)
 
-	resolved, err := resolver.ResolveModDependencies(context.Background(), map[string]string{
+	resolved, err := resolver.ResolveModDependencies(map[string]string{
 		"ComplexMod": "*",
 	}, nil, math.MaxInt, []TargetName{"Windows", "LinuxServer"})
 
@@ -109,7 +108,7 @@ func TestResolveForAllTargets(t *testing.T) {
 func TestNoMatchForAllTargets(t *testing.T) {
 	resolver := NewDependencyResolver(MockProvider{}, apiBase)
 
-	_, err := resolver.ResolveModDependencies(context.Background(), map[string]string{
+	_, err := resolver.ResolveModDependencies(map[string]string{
 		"ComplexMod": ">=3.0.0",
 	}, nil, math.MaxInt, []TargetName{"Windows", "LinuxServer"})
 

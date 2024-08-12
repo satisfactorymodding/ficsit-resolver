@@ -9,66 +9,6 @@ var _ Provider = (*MockProvider)(nil)
 
 type MockProvider struct{}
 
-func (m MockProvider) SMLVersions(_ context.Context) ([]SMLVersion, error) {
-	return []SMLVersion{
-		{
-			ID:                  "v2.2.1",
-			Version:             "2.2.1",
-			SatisfactoryVersion: 125236,
-			Targets:             []SMLVersionTarget{},
-		},
-		{
-			ID:                  "v3.3.2",
-			Version:             "3.3.2",
-			SatisfactoryVersion: 194714,
-			Targets: []SMLVersionTarget{
-				{
-					TargetName: TargetNameWindows,
-					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.3.2/SML.zip",
-				},
-			},
-		},
-		{
-			ID:                  "v3.6.0",
-			Version:             "3.6.0",
-			SatisfactoryVersion: 264901,
-			Targets: []SMLVersionTarget{
-				{
-					TargetName: TargetNameWindows,
-					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.6.0/SML.zip",
-				},
-				{
-					TargetName: TargetNameWindowsServer,
-					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.6.0/SML.zip",
-				},
-				{
-					TargetName: TargetNameLinuxServer,
-					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.6.0/SML.zip",
-				},
-			},
-		},
-		{
-			ID:                  "v3.6.1",
-			Version:             "3.6.1",
-			SatisfactoryVersion: 264901,
-			Targets: []SMLVersionTarget{
-				{
-					TargetName: TargetNameWindows,
-					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.6.1/SML.zip",
-				},
-				{
-					TargetName: TargetNameWindowsServer,
-					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.6.1/SML.zip",
-				},
-				{
-					TargetName: TargetNameLinuxServer,
-					Link:       "https://github.com/satisfactorymodding/SatisfactoryModLoader/releases/download/v3.6.1/SML.zip",
-				},
-			},
-		},
-	}, nil
-}
-
 var commonTargets = []Target{
 	{
 		TargetName: "Windows",
@@ -240,6 +180,64 @@ func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID strin
 				},
 			},
 		}, nil
+	case "SML":
+		return []ModVersion{
+			{
+				ID:          "v2.2.1",
+				Version:     "2.2.1",
+				GameVersion: ">=125236",
+				Targets:     []Target{},
+			},
+			{
+				ID:          "v3.3.2",
+				Version:     "3.3.2",
+				GameVersion: ">=194714",
+				Targets: []Target{
+					{
+						TargetName: TargetNameWindows,
+						Hash:       "unknown",
+					},
+				},
+			},
+			{
+				ID:          "v3.6.0",
+				Version:     "3.6.0",
+				GameVersion: ">=264901",
+				Targets: []Target{
+					{
+						TargetName: TargetNameWindows,
+						Hash:       "unknown",
+					},
+					{
+						TargetName: TargetNameWindowsServer,
+						Hash:       "unknown",
+					},
+					{
+						TargetName: TargetNameLinuxServer,
+						Hash:       "unknown",
+					},
+				},
+			},
+			{
+				ID:          "v3.6.1",
+				Version:     "3.6.1",
+				GameVersion: ">=264901",
+				Targets: []Target{
+					{
+						TargetName: TargetNameWindows,
+						Hash:       "unknown",
+					},
+					{
+						TargetName: TargetNameWindowsServer,
+						Hash:       "unknown",
+					},
+					{
+						TargetName: TargetNameLinuxServer,
+						Hash:       "unknown",
+					},
+				},
+			},
+		}, nil
 	}
 
 	panic("ModVersionsWithDependencies: " + modID)
@@ -264,6 +262,12 @@ func (m MockProvider) GetModName(_ context.Context, modReference string) (*ModNa
 			ID:           "asd32rfewqhy4",
 			ModReference: "ComplexMod",
 			Name:         "ComplexMod",
+		}, nil
+	case "SML":
+		return &ModName{
+			ID:           "SML",
+			ModReference: "SML",
+			Name:         "Satisfactory Mod Loader",
 		}, nil
 	}
 

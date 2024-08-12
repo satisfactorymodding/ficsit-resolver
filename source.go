@@ -19,7 +19,6 @@ type ficsitAPISource struct {
 	requiredTargets map[TargetName]bool
 	modVersionInfo  *xsync.MapOf[string, []ModVersion]
 	gameVersion     semver.Version
-	smlVersions     []SMLVersion
 }
 
 func (f *ficsitAPISource) GetPackageVersions(pkg string) ([]pubgrub.PackageVersion, error) {
@@ -31,39 +30,6 @@ func (f *ficsitAPISource) GetPackageVersions(pkg string) ([]pubgrub.PackageVersi
 	// Ignore game dependency
 	if pkg == factoryGamePkg {
 		return []pubgrub.PackageVersion{{Version: f.gameVersion}}, nil
-	}
-
-	// Special handling for SML
-	if pkg == smlPkg {
-		versions := make([]pubgrub.PackageVersion, 0)
-		for _, smlVersion := range f.smlVersions {
-			v, err := semver.NewVersion(smlVersion.Version)
-			if err != nil {
-				return nil, fmt.Errorf("failed to parse version %s: %w", smlVersion.Version, err)
-			}
-
-			foundTargets := maps.Clone(f.requiredTargets)
-			for _, target := range smlVersion.Targets {
-				delete(foundTargets, target.TargetName)
-			}
-
-			if len(foundTargets) > 0 {
-				continue
-			}
-
-			gameConstraint, err := semver.NewConstraint(fmt.Sprintf(">=%d", smlVersion.SatisfactoryVersion))
-			if err != nil {
-				return nil, fmt.Errorf("failed to parse constraint >=%d: %w", smlVersion.SatisfactoryVersion, err)
-			}
-
-			versions = append(versions, pubgrub.PackageVersion{
-				Version: v,
-				Dependencies: map[string]semver.Constraint{
-					factoryGamePkg: gameConstraint,
-				},
-			})
-		}
-		return versions, nil
 	}
 
 	response, err := f.provider.ModVersionsWithDependencies(context.TODO(), pkg)

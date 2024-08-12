@@ -3,7 +3,6 @@ package resolver
 import "context"
 
 type Provider interface {
-	SMLVersions(context context.Context) ([]SMLVersion, error)
 	ModVersionsWithDependencies(context context.Context, modID string) ([]ModVersion, error)
 	GetModName(context context.Context, modReference string) (*ModName, error)
 }
@@ -26,18 +25,6 @@ type VersionDependency struct {
 	ModReference string
 	Constraint   string
 	Optional     bool
-}
-
-type SMLVersion struct {
-	ID                  string             `json:"id"`
-	Version             string             `json:"version"`
-	Targets             []SMLVersionTarget `json:"targets"`
-	SatisfactoryVersion int                `json:"satisfactory_version"`
-}
-
-type SMLVersionTarget struct {
-	TargetName TargetName `json:"targetName"`
-	Link       string     `json:"link"`
 }
 
 type ModVersion struct {
