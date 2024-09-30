@@ -35,8 +35,8 @@ func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID strin
 	case "RefinedPower":
 		return []ModVersion{
 			{
-				ID:      "7QcfNdo5QAAyoC",
-				Version: "3.2.13",
+				Version:          "3.2.13",
+				RequiredOnRemote: true,
 				Dependencies: []Dependency{
 					{
 						ModID:     "ModularUI",
@@ -57,8 +57,8 @@ func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID strin
 				Targets: commonTargets,
 			},
 			{
-				ID:      "7QcfNdo5QAAyoC",
-				Version: "3.2.11",
+				Version:          "3.2.11",
+				RequiredOnRemote: true,
 				Dependencies: []Dependency{
 					{
 						ModID:     "ModularUI",
@@ -75,8 +75,8 @@ func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID strin
 				Targets: commonTargets,
 			},
 			{
-				ID:      "7QcfNdo5QAAyoC",
-				Version: "3.2.10",
+				Version:          "3.2.10",
+				RequiredOnRemote: true,
 				Dependencies: []Dependency{
 					{
 						ModID:     "ModularUI",
@@ -96,8 +96,8 @@ func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID strin
 	case "RefinedRDLib":
 		return []ModVersion{
 			{
-				ID:      "7QcfNdo5QAAyoC",
-				Version: "1.1.7",
+				Version:          "1.1.7",
+				RequiredOnRemote: true,
 				Dependencies: []Dependency{
 					{
 						ModID:     "SML",
@@ -108,23 +108,23 @@ func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID strin
 				Targets: commonTargets,
 			},
 			{
-				ID:           "7QcfNdo5QAAyoC",
-				Version:      "1.1.6",
-				Dependencies: []Dependency{sml3},
-				Targets:      commonTargets,
+				Version:          "1.1.6",
+				RequiredOnRemote: true,
+				Dependencies:     []Dependency{sml3},
+				Targets:          commonTargets,
 			},
 			{
-				ID:           "7QcfNdo5QAAyoC",
-				Version:      "1.1.5",
-				Dependencies: []Dependency{sml3},
-				Targets:      commonTargets,
+				Version:          "1.1.5",
+				RequiredOnRemote: true,
+				Dependencies:     []Dependency{sml3},
+				Targets:          commonTargets,
 			},
 		}, nil
 	case "ModularUI":
 		return []ModVersion{
 			{
-				ID:      "7QcfNdo5QAAyoC",
-				Version: "2.1.12",
+				Version:          "2.1.12",
+				RequiredOnRemote: true,
 				Dependencies: []Dependency{
 					{
 						ModID:     "SML",
@@ -135,16 +135,16 @@ func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID strin
 				Targets: commonTargets,
 			},
 			{
-				ID:           "7QcfNdo5QAAyoC",
-				Version:      "2.1.11",
-				Dependencies: []Dependency{sml3},
-				Targets:      commonTargets,
+				Version:          "2.1.11",
+				RequiredOnRemote: true,
+				Dependencies:     []Dependency{sml3},
+				Targets:          commonTargets,
 			},
 			{
-				ID:           "7QcfNdo5QAAyoC",
-				Version:      "2.1.10",
-				Dependencies: []Dependency{sml3},
-				Targets:      commonTargets,
+				Version:          "2.1.10",
+				RequiredOnRemote: true,
+				Dependencies:     []Dependency{sml3},
+				Targets:          commonTargets,
 			},
 		}, nil
 	case "ThisModDoesNotExist$$$":
@@ -152,9 +152,9 @@ func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID strin
 	case "ComplexMod":
 		return []ModVersion{
 			{
-				ID:           "7QcfNdo5QAAyoC",
-				Version:      "3.0.0",
-				Dependencies: []Dependency{sml3},
+				Version:          "3.0.0",
+				RequiredOnRemote: true,
+				Dependencies:     []Dependency{sml3},
 				Targets: []Target{
 					{
 						TargetName: "LinuxServer",
@@ -163,15 +163,15 @@ func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID strin
 				},
 			},
 			{
-				ID:           "7QcfNdo5QAAyoC",
-				Version:      "2.0.0",
-				Dependencies: []Dependency{sml3},
-				Targets:      commonTargets,
+				Version:          "2.0.0",
+				RequiredOnRemote: true,
+				Dependencies:     []Dependency{sml3},
+				Targets:          commonTargets,
 			},
 			{
-				ID:           "7QcfNdo5QAAyoC",
-				Version:      "1.0.0",
-				Dependencies: []Dependency{sml3},
+				Version:          "1.0.0",
+				RequiredOnRemote: true,
+				Dependencies:     []Dependency{sml3},
 				Targets: []Target{
 					{
 						TargetName: "Windows",
@@ -183,15 +183,15 @@ func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID strin
 	case "SML":
 		return []ModVersion{
 			{
-				ID:          "v2.2.1",
-				Version:     "2.2.1",
-				GameVersion: ">=125236",
-				Targets:     []Target{},
+				Version:          "2.2.1",
+				GameVersion:      ">=125236",
+				RequiredOnRemote: true,
+				Targets:          []Target{},
 			},
 			{
-				ID:          "v3.3.2",
-				Version:     "3.3.2",
-				GameVersion: ">=194714",
+				Version:          "3.3.2",
+				GameVersion:      ">=194714",
+				RequiredOnRemote: true,
 				Targets: []Target{
 					{
 						TargetName: TargetNameWindows,
@@ -200,9 +200,9 @@ func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID strin
 				},
 			},
 			{
-				ID:          "v3.6.0",
-				Version:     "3.6.0",
-				GameVersion: ">=264901",
+				Version:          "3.6.0",
+				GameVersion:      ">=264901",
+				RequiredOnRemote: true,
 				Targets: []Target{
 					{
 						TargetName: TargetNameWindows,
@@ -219,9 +219,9 @@ func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID strin
 				},
 			},
 			{
-				ID:          "v3.6.1",
-				Version:     "3.6.1",
-				GameVersion: ">=264901",
+				Version:          "3.6.1",
+				GameVersion:      ">=264901",
+				RequiredOnRemote: true,
 				Targets: []Target{
 					{
 						TargetName: TargetNameWindows,
@@ -234,6 +234,46 @@ func (m MockProvider) ModVersionsWithDependencies(_ context.Context, modID strin
 					{
 						TargetName: TargetNameLinuxServer,
 						Hash:       "unknown",
+					},
+				},
+			},
+		}, nil
+	case "ClientOnlyMod":
+		return []ModVersion{
+			{
+				Version:          "1.0.0",
+				RequiredOnRemote: false,
+				Targets: []Target{
+					{
+						TargetName: "Windows",
+						Hash:       "8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85",
+					},
+				},
+			},
+		}, nil
+	case "ServerOnlyMod":
+		return []ModVersion{
+			{
+				Version:          "2.0.0",
+				RequiredOnRemote: false,
+				Targets: []Target{
+					{
+						TargetName: "WindowsServer",
+						Hash:       "8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85",
+					},
+				},
+			},
+			{
+				Version:          "1.0.0",
+				RequiredOnRemote: false,
+				Targets: []Target{
+					{
+						TargetName: "WindowsServer",
+						Hash:       "8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85",
+					},
+					{
+						TargetName: "LinuxServer",
+						Hash:       "8739c76e681f900923b900c9df0ef75cf421d39cabb54650c4b9ad19b6a76d85",
 					},
 				},
 			},
@@ -262,6 +302,18 @@ func (m MockProvider) GetModName(_ context.Context, modReference string) (*ModNa
 			ID:           "asd32rfewqhy4",
 			ModReference: "ComplexMod",
 			Name:         "ComplexMod",
+		}, nil
+	case "ClientOnlyMod":
+		return &ModName{
+			ID:           "asd32rfewqhy4",
+			ModReference: "ClientOnlyMod",
+			Name:         "ClientOnlyMod",
+		}, nil
+	case "ServerOnlyMod":
+		return &ModName{
+			ID:           "asd32rfewqhy4",
+			ModReference: "ServerOnlyMod",
+			Name:         "ServerOnlyMod",
 		}, nil
 	case "SML":
 		return &ModName{

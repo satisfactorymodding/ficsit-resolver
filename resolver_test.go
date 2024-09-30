@@ -87,7 +87,7 @@ func TestMissingTarget(t *testing.T) {
 		"RefinedPower": "*",
 	}, nil, math.MaxInt, []TargetName{"NotARealTarget"})
 
-	testza.AssertEqual(t, "failed to solve dependencies: So, because installing every version of Refined Power (RefinedPower) and Refined Power (RefinedPower) is forbidden, version solving failed.", err.Error())
+	testza.AssertEqual(t, "invalid target: NotARealTarget", err.Error())
 }
 
 func TestResolveForAllTargets(t *testing.T) {
@@ -111,4 +111,47 @@ func TestNoMatchForAllTargets(t *testing.T) {
 	}, nil, math.MaxInt, []TargetName{"Windows", "LinuxServer"})
 
 	testza.AssertEqual(t, "failed to solve dependencies: So, because installing ComplexMod \"3.0.0\" and ComplexMod \"3.0.0\" is forbidden, version solving failed.", err.Error())
+}
+
+func TestMatchForAllTargetsNotRequiredOnRemote(t *testing.T) {
+	resolver := NewDependencyResolver(MockProvider{})
+
+	resolved, err := resolver.ResolveModDependencies(map[string]string{
+		"ClientOnlyMod": "*",
+	}, nil, math.MaxInt, []TargetName{"Windows", "WindowsServer", "LinuxServer"})
+
+	testza.AssertNoError(t, err)
+	testza.AssertNotNil(t, resolved)
+	testza.AssertLen(t, resolved.Mods, 1)
+	testza.AssertEqual(t, resolved.Mods["ClientOnlyMod"].Version, "1.0.0")
+
+	resolved, err = resolver.ResolveModDependencies(map[string]string{
+		"ServerOnlyMod": "<=1.0.0",
+	}, nil, math.MaxInt, []TargetName{"Windows", "WindowsServer", "LinuxServer"})
+
+	testza.AssertNoError(t, err)
+	testza.AssertNotNil(t, resolved)
+	testza.AssertLen(t, resolved.Mods, 1)
+	testza.AssertEqual(t, resolved.Mods["ServerOnlyMod"].Version, "1.0.0")
+
+	resolved, err = resolver.ResolveModDependencies(map[string]string{
+		"ClientOnlyMod": "*",
+		"ServerOnlyMod": "<=1.0.0",
+	}, nil, math.MaxInt, []TargetName{"Windows", "WindowsServer", "LinuxServer"})
+
+	testza.AssertNoError(t, err)
+	testza.AssertNotNil(t, resolved)
+	testza.AssertLen(t, resolved.Mods, 2)
+	testza.AssertEqual(t, resolved.Mods["ClientOnlyMod"].Version, "1.0.0")
+	testza.AssertEqual(t, resolved.Mods["ServerOnlyMod"].Version, "1.0.0")
+}
+
+func TestNoMatchForAllTargetsNotRequiredOnRemote(t *testing.T) {
+	resolver := NewDependencyResolver(MockProvider{})
+
+	_, err := resolver.ResolveModDependencies(map[string]string{
+		"ServerOnlyMod": ">=2.0.0",
+	}, nil, math.MaxInt, []TargetName{"WindowsServer", "LinuxServer"})
+
+	testza.AssertEqual(t, "failed to solve dependencies: So, because installing ServerOnlyMod \"2.0.0\" and ServerOnlyMod \"2.0.0\" is forbidden, version solving failed.", err.Error())
 }

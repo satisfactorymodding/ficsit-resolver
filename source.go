@@ -21,6 +21,15 @@ type ficsitAPISource struct {
 	gameVersion     semver.Version
 }
 
+var clientTargets = []TargetName{
+	TargetNameWindows,
+}
+
+var serverTargets = []TargetName{
+	TargetNameWindowsServer,
+	TargetNameLinuxServer,
+}
+
 func (f *ficsitAPISource) GetPackageVersions(pkg string) ([]pubgrub.PackageVersion, error) {
 	// If root package, return the base list of dependencies
 	if pkg == rootPkg {
@@ -46,12 +55,11 @@ func (f *ficsitAPISource) GetPackageVersions(pkg string) ([]pubgrub.PackageVersi
 			return nil, fmt.Errorf("failed to parse version %s: %w", modVersion.Version, err)
 		}
 
-		foundTargets := maps.Clone(f.requiredTargets)
-		for _, target := range modVersion.Targets {
-			delete(foundTargets, target.TargetName)
+		matches, err := f.matchesTargetRequirements(modVersion)
+		if err != nil {
+			return nil, err
 		}
-
-		if len(foundTargets) > 0 {
+		if !matches {
 			continue
 		}
 
@@ -105,4 +113,40 @@ func (f *ficsitAPISource) PickVersion(pkg string, versions []semver.Version) sem
 	}
 
 	return helpers.StandardVersionPriority(versions)
+}
+
+func (f *ficsitAPISource) matchesTargetRequirements(modVersion ModVersion) (bool, error) {
+	if len(f.requiredTargets) == 0 {
+		return true, nil
+	}
+
+	requiredClientTargets := make(map[TargetName]bool)
+	requiredServerTargets := make(map[TargetName]bool)
+
+	for target := range f.requiredTargets {
+		if slices.Contains(clientTargets, target) {
+			requiredClientTargets[target] = true
+		} else if slices.Contains(serverTargets, target) {
+			requiredServerTargets[target] = true
+		} else {
+			return false, fmt.Errorf("unknown requested target %s", target)
+		}
+	}
+
+	missingClientTargets := maps.Clone(requiredClientTargets)
+	missingServerTargets := maps.Clone(requiredServerTargets)
+	for _, target := range modVersion.Targets {
+		delete(missingClientTargets, target.TargetName)
+		delete(missingServerTargets, target.TargetName)
+	}
+
+	if modVersion.RequiredOnRemote {
+		// All targets must be present
+		return len(missingClientTargets) == 0 && len(missingServerTargets) == 0, nil
+	}
+
+	// Don't consider as having all targets when no targets of that type were requested
+	hasAllClient := len(requiredClientTargets) > 0 && len(missingClientTargets) == 0
+	hasAllServer := len(requiredServerTargets) > 0 && len(missingServerTargets) == 0
+	return hasAllClient || hasAllServer, nil
 }
