@@ -3,7 +3,6 @@ package resolver
 import (
 	"errors"
 	"fmt"
-	"slices"
 
 	"github.com/mircearoata/pubgrub-go/pubgrub"
 	"github.com/mircearoata/pubgrub-go/pubgrub/helpers"
@@ -16,10 +15,10 @@ const (
 	factoryGamePkg = "FactoryGame"
 )
 
-var allTargets = []TargetName{
-	TargetNameLinuxServer,
-	TargetNameWindows,
-	TargetNameWindowsServer,
+var allTargets = map[TargetName]bool{
+	TargetNameLinuxServer:   true,
+	TargetNameWindows:       true,
+	TargetNameWindowsServer: true,
 }
 
 type DependencyResolver struct {
@@ -49,7 +48,7 @@ func (d DependencyResolver) ResolveModDependencies(constraints map[string]string
 
 	mappedTargets := make(map[TargetName]bool, len(requiredTargets))
 	for _, target := range requiredTargets {
-		if !slices.Contains(allTargets, target) {
+		if !allTargets[target] {
 			return nil, fmt.Errorf("invalid target: %s", target)
 		}
 		mappedTargets[target] = true

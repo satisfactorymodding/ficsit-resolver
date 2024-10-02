@@ -21,13 +21,13 @@ type ficsitAPISource struct {
 	gameVersion     semver.Version
 }
 
-var clientTargets = []TargetName{
-	TargetNameWindows,
+var clientTargets = map[TargetName]bool{
+	TargetNameWindows: true,
 }
 
-var serverTargets = []TargetName{
-	TargetNameWindowsServer,
-	TargetNameLinuxServer,
+var serverTargets = map[TargetName]bool{
+	TargetNameWindowsServer: true,
+	TargetNameLinuxServer:   true,
 }
 
 func (f *ficsitAPISource) GetPackageVersions(pkg string) ([]pubgrub.PackageVersion, error) {
@@ -124,9 +124,9 @@ func (f *ficsitAPISource) matchesTargetRequirements(modVersion ModVersion) (bool
 	requiredServerTargets := make(map[TargetName]bool)
 
 	for target := range f.requiredTargets {
-		if slices.Contains(clientTargets, target) {
+		if clientTargets[target] {
 			requiredClientTargets[target] = true
-		} else if slices.Contains(serverTargets, target) {
+		} else if serverTargets[target] {
 			requiredServerTargets[target] = true
 		} else {
 			return false, fmt.Errorf("unknown requested target %s", target)
