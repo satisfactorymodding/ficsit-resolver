@@ -40,10 +40,8 @@ github.com/lithammer/fuzzysearch v1.1.8/go.mod h1:IdqeyBClc3FFqSzYq/MXESsS4S0FsZ
 github.com/mattn/go-runewidth v0.0.13/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
 github.com/mattn/go-runewidth v0.0.15 h1:UNAjwbU9l54TA3KzvqLGxwWjHmMgBUVhBiTjelZgg3U=
 github.com/mattn/go-runewidth v0.0.15/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
-github.com/mircearoata/pubgrub-go v0.3.3 h1:XGwL8Xh5GX+mbnvWItbM/lVJxAq3NZtfUtbJ/hUf2ig=
-github.com/mircearoata/pubgrub-go v0.3.3/go.mod h1:9oWL9ZXdjFYvnGl95qiM1dTciFNx1MN8fUnG3SUwDi8=
-github.com/pkg/errors v0.9.1 h1:FEBLx1zS214owpjy7qsBeixbURkuhQAwrK5UwLGTwt4=
-github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
+github.com/mircearoata/pubgrub-go v0.4.0 h1:eeYWuzXPmZdk0qb/qp2VaMB6fMFYvcLjrhTqJlu1g9E=
+github.com/mircearoata/pubgrub-go v0.4.0/go.mod h1:1BXU7JpyjnguqdaY2en2JmxRTRCg9QQoYTG4R5K4bYc=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 h1:Jamvg5psRIccs7FGNTlIRMkT8wgtp5eCXdBlqhYGL6U=
 github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=

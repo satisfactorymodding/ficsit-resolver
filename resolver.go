@@ -12,7 +12,7 @@ import (
 
 const (
 	rootPkg        = "$$root$$"
-	factoryGamePkg = "FactoryGame"
+	FactoryGamePkg = "FactoryGame"
 )
 
 var allTargets = map[TargetName]bool{
@@ -63,7 +63,13 @@ func (d DependencyResolver) ResolveModDependencies(constraints map[string]string
 		requiredTargets: mappedTargets,
 	}
 
-	result, err := pubgrub.Solve(helpers.NewCachingSource(ficsitSource), rootPkg)
+	result, err := pubgrub.Solve(
+		helpers.NewCachingSource(ficsitSource),
+		rootPkg,
+		pubgrub.WithEnvironmentPackages(map[string]semver.Constraint{
+			FactoryGamePkg: semver.SingleVersionConstraint(gameVersionSemver),
+		}),
+	)
 	if err != nil {
 		finalError := err
 		var solverErr pubgrub.SolvingError
@@ -74,7 +80,7 @@ func (d DependencyResolver) ResolveModDependencies(constraints map[string]string
 	}
 
 	delete(result, rootPkg)
-	delete(result, factoryGamePkg)
+	delete(result, FactoryGamePkg)
 
 	outputLock := NewLockfile()
 	for k, v := range result {

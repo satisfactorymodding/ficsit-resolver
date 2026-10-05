@@ -30,6 +30,8 @@ var serverTargets = map[TargetName]bool{
 	TargetNameLinuxServer:   true,
 }
 
+var ErrModNotFound = pubgrub.ErrPackageNotFound
+
 func (f *ficsitAPISource) GetPackageVersions(pkg string) ([]pubgrub.PackageVersion, error) {
 	// If root package, return the base list of dependencies
 	if pkg == rootPkg {
@@ -37,7 +39,7 @@ func (f *ficsitAPISource) GetPackageVersions(pkg string) ([]pubgrub.PackageVersi
 	}
 
 	// Ignore game dependency
-	if pkg == factoryGamePkg {
+	if pkg == FactoryGamePkg {
 		return []pubgrub.PackageVersion{{Version: f.gameVersion}}, nil
 	}
 
@@ -60,6 +62,10 @@ func (f *ficsitAPISource) GetPackageVersions(pkg string) ([]pubgrub.PackageVersi
 			return nil, err
 		}
 		if !matches {
+			versions = append(versions, pubgrub.PackageVersion{
+				Version:         v,
+				ForbiddenReason: "does not support the required target(s)",
+			})
 			continue
 		}
 
@@ -85,7 +91,7 @@ func (f *ficsitAPISource) GetPackageVersions(pkg string) ([]pubgrub.PackageVersi
 				return nil, fmt.Errorf("failed to parse game version constraint %s: %w", modVersion.GameVersion, err)
 			}
 
-			dependencies[factoryGamePkg] = factoryGameConstraint
+			dependencies[FactoryGamePkg] = factoryGameConstraint
 		}
 
 		versions = append(versions, pubgrub.PackageVersion{

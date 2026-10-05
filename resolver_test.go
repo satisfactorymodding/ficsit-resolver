@@ -27,7 +27,7 @@ func TestProfileRequiredOlderVersion(t *testing.T) {
 		"RefinedRDLib": "1.1.5",
 	}, nil, math.MaxInt, nil)
 
-	testza.AssertEqual(t, "failed to solve dependencies: Because installing Refined Power (RefinedPower) \"3.2.11\" and Refined Power (RefinedPower) \"3.2.11\" depends on RefinedRDLib \"^1.1.6\", installing RefinedRDLib \"^1.1.6\".\nSo, because installing RefinedRDLib \"1.1.5\", version solving failed.", err.Error())
+	testza.AssertEqual(t, "failed to solve dependencies: Because installing Refined Power (RefinedPower) \"3.2.11\" which depends on RefinedRDLib \"^1.1.6\", RefinedRDLib \"^1.1.6\" is required.\nSo, because installing RefinedRDLib \"1.1.5\", version solving failed.", err.Error())
 }
 
 func TestResolutionNonExistentMod(t *testing.T) {
@@ -57,9 +57,9 @@ func TestOldGameVersion(t *testing.T) {
 		"RefinedPower": "*",
 	}, nil, 0, nil)
 
-	testza.AssertEqual(t, `failed to solve dependencies: Because Refined Power (RefinedPower) "<3.2.13" depends on Satisfactory Mod Loader (SML) "^3.6.0" and Refined Power (RefinedPower) "3.2.13" depends on Satisfactory Mod Loader (SML) "3.6.1", every version of Refined Power (RefinedPower) depends on Satisfactory Mod Loader (SML) "^3.6.0".
-And because Satisfactory Mod Loader (SML) ">=3.6.0" depends on Satisfactory (FactoryGame) ">=264901", every version of Refined Power (RefinedPower) depends on Satisfactory (FactoryGame) ">=264901".
-So, because Satisfactory CL0 is installed, version solving failed.`, err.Error())
+	testza.AssertEqual(t, `failed to solve dependencies: Because Refined Power (RefinedPower) "<3.2.13" depends on Satisfactory Mod Loader (SML) "^3.6.0" and Refined Power (RefinedPower) "3.2.13" depends on Satisfactory Mod Loader (SML) "3.6.1", every version of Refined Power (RefinedPower) requires Satisfactory Mod Loader (SML) "^3.6.0".
+And because Satisfactory Mod Loader (SML) ">=3.6.0" depends on Satisfactory ">=264901", every version of Refined Power (RefinedPower) requires Satisfactory ">=264901".
+So, because Satisfactory CL0 is installed and installing Refined Power (RefinedPower), version solving failed.`, err.Error())
 }
 
 func TestLockfileResolution(t *testing.T) {
@@ -110,7 +110,7 @@ func TestNoMatchForAllTargets(t *testing.T) {
 		"ComplexMod": ">=3.0.0",
 	}, nil, math.MaxInt, []TargetName{"Windows", "LinuxServer"})
 
-	testza.AssertEqual(t, "failed to solve dependencies: So, because installing ComplexMod \"3.0.0\" and ComplexMod \"3.0.0\" is forbidden, version solving failed.", err.Error())
+	testza.AssertEqual(t, "failed to solve dependencies: Because installing ComplexMod \"3.0.0\" which does not support the required target(s), version solving failed.", err.Error())
 }
 
 func TestMatchForAllTargetsNotRequiredOnRemote(t *testing.T) {
@@ -153,5 +153,5 @@ func TestNoMatchForAllTargetsNotRequiredOnRemote(t *testing.T) {
 		"ServerOnlyMod": ">=2.0.0",
 	}, nil, math.MaxInt, []TargetName{"WindowsServer", "LinuxServer"})
 
-	testza.AssertEqual(t, "failed to solve dependencies: So, because installing ServerOnlyMod \"2.0.0\" and ServerOnlyMod \"2.0.0\" is forbidden, version solving failed.", err.Error())
+	testza.AssertEqual(t, "failed to solve dependencies: Because installing ServerOnlyMod \"2.0.0\" which does not support the required target(s), version solving failed.", err.Error())
 }
