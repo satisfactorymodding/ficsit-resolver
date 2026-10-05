@@ -31,7 +31,7 @@ func NewDependencyResolver(provider Provider) DependencyResolver {
 	}
 }
 
-func (d DependencyResolver) ResolveModDependencies(constraints map[string]string, lockFile *LockFile, gameVersion int, requiredTargets []TargetName) (*LockFile, error) {
+func (d DependencyResolver) ResolveModDependencies(constraints map[string]string, preferredVersions PreferredVersions, gameVersion int, requiredTargets []TargetName) (*LockFile, error) {
 	gameVersionSemver, err := semver.NewVersion(fmt.Sprintf("%d", gameVersion))
 	if err != nil {
 		return nil, fmt.Errorf("failed parsing game version: %w", err)
@@ -55,12 +55,12 @@ func (d DependencyResolver) ResolveModDependencies(constraints map[string]string
 	}
 
 	ficsitSource := &ficsitAPISource{
-		provider:        d.provider,
-		gameVersion:     gameVersionSemver,
-		lockfile:        lockFile,
-		toInstall:       toInstall,
-		modVersionInfo:  xsync.NewMapOf[string, []ModVersion](),
-		requiredTargets: mappedTargets,
+		provider:          d.provider,
+		gameVersion:       gameVersionSemver,
+		preferredVersions: preferredVersions,
+		toInstall:         toInstall,
+		modVersionInfo:    xsync.NewMapOf[string, []ModVersion](),
+		requiredTargets:   mappedTargets,
 	}
 
 	result, err := pubgrub.Solve(

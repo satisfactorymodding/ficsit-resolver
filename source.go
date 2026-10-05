@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"maps"
-	"slices"
 
 	"github.com/mircearoata/pubgrub-go/pubgrub"
 	"github.com/mircearoata/pubgrub-go/pubgrub/helpers"
@@ -13,12 +12,16 @@ import (
 )
 
 type ficsitAPISource struct {
-	provider        Provider
-	lockfile        *LockFile
-	toInstall       map[string]semver.Constraint
-	requiredTargets map[TargetName]bool
-	modVersionInfo  *xsync.MapOf[string, []ModVersion]
-	gameVersion     semver.Version
+	provider          Provider
+	preferredVersions PreferredVersions
+	toInstall         map[string]semver.Constraint
+	requiredTargets   map[TargetName]bool
+	modVersionInfo    *xsync.MapOf[string, []ModVersion]
+	gameVersion       semver.Version
+}
+
+type PreferredVersions interface {
+	PreferredVersions(pkg string) (semver.Constraint, bool)
 }
 
 var clientTargets = map[TargetName]bool{
@@ -105,15 +108,16 @@ func (f *ficsitAPISource) GetPackageVersions(pkg string) ([]pubgrub.PackageVersi
 }
 
 func (f *ficsitAPISource) PickVersion(pkg string, versions []semver.Version) semver.Version {
-	if f.lockfile != nil {
-		if existing, ok := f.lockfile.Mods[pkg]; ok {
-			v, err := semver.NewVersion(existing.Version)
-			if err == nil {
-				if slices.ContainsFunc(versions, func(version semver.Version) bool {
-					return v.Compare(version) == 0
-				}) {
-					return v
+	if f.preferredVersions != nil {
+		if constraint, ok := f.preferredVersions.PreferredVersions(pkg); ok {
+			var availablePreferred []semver.Version
+			for _, v := range versions {
+				if constraint.Contains(v) {
+					availablePreferred = append(availablePreferred, v)
 				}
+			}
+			if len(availablePreferred) > 0 {
+				return helpers.StandardVersionPriority(availablePreferred)
 			}
 		}
 	}

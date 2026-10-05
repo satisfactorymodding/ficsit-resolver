@@ -1,5 +1,9 @@
 package resolver
 
+import (
+	"github.com/mircearoata/pubgrub-go/pubgrub/semver"
+)
+
 type LockfileVersion int
 
 const (
@@ -51,4 +55,19 @@ func (l *LockFile) Remove(modID ...string) *LockFile {
 		delete(l.Mods, s)
 	}
 	return l
+}
+
+func (l *LockFile) PreferredVersions(pkg string) (semver.Constraint, bool) {
+	if l == nil {
+		// Can get passed as a typed nil PreferredVersions interface to the resolver when there is no lockfile present
+		return semver.Constraint{}, false
+	}
+	if mod, ok := l.Mods[pkg]; ok {
+		v, err := semver.NewVersion(mod.Version)
+		if err != nil {
+			return semver.Constraint{}, false
+		}
+		return semver.SingleVersionConstraint(v), true
+	}
+	return semver.Constraint{}, false
 }
