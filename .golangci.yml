@@ -1,56 +1,45 @@
-linters-settings:
-  wrapcheck:
-    ignoreSigs:
-      - .Errorf(
-      - errors.New(
-
-    ignorePackageGlobs:
-      - github.com/satisfactorymodding/ficsit-resolver/*
-
-  govet:
-    check-shadowing: true
-    enable-all: true
-    disable:
-      - shadow
-
-  gocritic:
-    disabled-checks:
-      - ifElseChain
-
-  gci:
-    custom-order: true
-    sections:
-      - standard
-      - default
-      - prefix(github.com/satisfactorymodding/ficsit-resolver)
-      - blank
-      - dot
-
-run:
-  skip-files:
-    - ./ficsit/types.go
-
+version: "2"
 linters:
-  disable-all: true
+  default: none
   enable:
-    - errcheck
-    - gosimple
-    - govet
-    - ineffassign
-    - staticcheck
-    - typecheck
-    - unused
     - bidichk
     - contextcheck
     - durationcheck
+    - errcheck
     - errorlint
-    - goimports
-    - revive
+    - gocritic
+    - govet
+    - ineffassign
     - misspell
+    - nonamedreturns
     - prealloc
+    - revive
+    - staticcheck
+    - unused
     - whitespace
     - wrapcheck
+  settings:
+    govet:
+      enable-all: true
+      disable:
+        - shadow
+  exclusions:
+    presets:
+      - comments
+      - std-error-handling
+      - common-false-positives
+      - legacy
+formatters:
+  enable:
     - gci
-    - gocritic
     - gofumpt
-    - nonamedreturns
+    - goimports
+  settings:
+    gci:
+      custom-order: true
+      sections:
+        - standard
+        - default
+        - localmodule
+        - blank
+        - dot

@@ -134,11 +134,12 @@ func (f *ficsitAPISource) matchesTargetRequirements(modVersion ModVersion) (bool
 	requiredServerTargets := make(map[TargetName]bool)
 
 	for target := range f.requiredTargets {
-		if clientTargets[target] {
+		switch {
+		case clientTargets[target]:
 			requiredClientTargets[target] = true
-		} else if serverTargets[target] {
+		case serverTargets[target]:
 			requiredServerTargets[target] = true
-		} else {
+		default:
 			return false, fmt.Errorf("unknown requested target %s", target)
 		}
 	}
